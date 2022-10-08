@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FireFly C Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="w3-cell-row">
+  <div class="w3-container w3-black w3-cell">
+    <p><a href="main2.html">Main Page</a></p>
+  </div>
+  <div class="w3-container w3-black w3-cell">
+    <h1>FlyJson</h1>
+  </div>
+</div>
+<div class="w3-cell-row">
+  <div class="w3-container w3-blue w3-cell">
+    <p>version 0.9.53</p>
+    <p>
+      <a href="#FlyJsonGet">FlyJsonGet</a><br>
+      <a href="#FlyJsonPut">FlyJsonPut</a><br>
+    </p>
+  </div>
+  <div class="w3-container w3-cell">
+    <h3>An API for processing JSON files and strings</h3>
+    <p>If you are new to JSON, see both <a href="https://www.json.org/json-en.html">json.org</a> and <a href="https://jsonlint.com">jsonlint.com</a>.</p>
+    <p>C doesn't process JSON very naturally like Python or Rust, so this API attempts to make it easier.</p>
+    <p>JSON types are object, array, string, number, true, false and null. These map onto the C types of structure, array, char *, long, double, TRUE, FALSE and NULL.</p>
+    <p>One caveat is that arrays must be of the same type, as C doesn't have any natural way to have mixed-type arrays.<p>
+    <p>Paths are described as a set of keys separated by colons:<p>
+    <div class="w3-panel w3-card w3-light-grey">
+      <h5>Example: FlyJsonPut</h5>
+      <div class="w3-code notranslate">
+        char      szName[32] = "My Name";<br>
+        int       age        = 38;<br>
+        char      szOutStr[100];
+        <br>
+        const flyJsonPath_t aJsonPaths[] = {<br>
+          { "name", szName, FLYJSON_STR },<br>
+          { "age",  &age,   FLYJSON_INT },<br>
+        };<br>
+        <br>
+        FlyJsonPut(szOutStr, sizeof(szOutStr), aJsonPaths, NumElements(aJsonPaths));<br>
+        printf("%s\n", szOutStr); // prints "{ "name": "My Name", "age": 38 }"<br>
+        <br>
+      </div>
+    </div>
+    <h3 id="FlyJsonGet" class="w3-text-blue">FlyJsonGet</h3>
+    <p>Fills in variables from a JSON string. Only those fields that match paths are filled in.</p>
+    <p><a href="#top">Back to top</a></p>
+    <p><b>Prototype</b></p>
+    <div class="w3-code notranslate">
+      bool_t FlyJsonGet(const flyJsonPath_t aJsonPaths, unsigned numJsonPaths, const char *szJson, flyJsonLinePos_t &linePos)<br>
+      <br>
+      @param  JsonPaths an array of paths, pointers and types<br>
+      @param  numJsonPaths the number of paths in array<br>
+      @param  szJson a JSON object in string form<br>
+      @param  linePos a pointer to the line/position, or NULL if don't care<br>
+      @return TRUE if worked
+    </div>
+    <p><b>Notes</b></p>
+    <p>Each item in the path points to a key/value pair, where the value may be something simple
+       like an int or string, or may be an object or an array.</p>
+    <p>A simple way to set defaults is to memset() your structure with 0s, or any out-of-bounds-
+       values, then perform a FlyJsonGet() and use this structure to update your actual data, so
+       only the "set" fields are used.</p>
+    <p>Since the flyJsonPath_t structure defines the types, this is essentially used as a basic
+       schema. Any valid ranges for values must be checked by your code.</p>
+    <p>If there is a problem with the incoming JSON (either it's not valid JSON or a field is
+       unknown), then the line number and position of the offending field is returned in linePos.
+       The linePos parameter may be NULL if the code doesn't need that information.</p>
+    <p>Testing Bullets</p>
+    <ul>
+      <li>Bullet one</li>
+      <li>Bullet two</li>
+      <li>Bullet three</li>
+    </ul>
+    <p>Testing Bullets</p>
+    <ol type="1">
+      <li>Item One</li>
+      <li>Item Two</li>
+      <li>Item Three</li>
+    </ol>
+    <p>This is the triple tick. Everything lines up:</p>
+    <pre>
+    Bits 01234567890
+    Wal.*&MQQQQ
+    </pre>
+    <p>Testing a table</p>
+    <table class="w3-table-all">
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Points</th>
+      </tr>
+      <tr>
+        <td>Jill</td>
+        <td>Smith</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+      </tr>
+      <tr>
+        <td>Adam</td>
+        <td>Johnson</td>
+        <td>67</td>
+      </tr>
+      <tr>
+        <td>Bo</td>
+        <td>Nilson</td>
+        <td>35</td>
+      </tr>
+    </table>
+    <h3 id="FlyJsonPut" class="w3-text-blue">FlyJsonPut</h3>
+    <p>Puts a set of variables to a JSON string. The paths must be predefined.</p>
+    <p><a href="#top">Back to top</a></p>
+    <p><b>Prototype</b></p>
+    <div class="w3-code notranslate">
+      size_t FlyJsonPut(char *szJson, size_t size, const flyJsonPath_t aJsonPaths, unsigned numJsonPaths, bool_t fCompress)<br>
+      <br>
+      @param szJson the sting where to output the JSON, or NULL to just get the length string will be<br>
+      @param size maximim size of string including '\0'
+      @param JsonPaths an array of paths, pointers and types<br>
+      @param numJsonPaths the number of paths in array<br>
+      @param fCompress Have no lines or spaces in the output, otherwise in "pretty" format
+      @return strlen of the output JSON
+    </div>
+    <p><b>Notes</b></p>
+    <p>Well, you get the idea.</p>
+    <p>See also: <a href="#FlyJsonGet">FlyJsonGet</a></p>
+    </div>
+</div>
+</body>
+</html>
